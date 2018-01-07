@@ -1,7 +1,7 @@
 <template>
   <div class="nav-main">
     <span class="brand">电影世界</span>
-    <input class="search"/>
+    <input class="search" placeholder="🔍  搜索电影"/>
     <ul>
       <li v-for="item in links" :key="item">{{ item }}</li>
     </ul>

@@ -4,6 +4,15 @@
       <img src="static/bg.jpg"/>
     </div>
     <Nav class="navbar"/>
+    <div class="movie-info">
+      <span class="title">电影信息</span><br>
+      <span class="subtitle">电影简介</span>
+      <div class="operation">
+        <ul>
+          <li v-for="item in operations" :key="item">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -14,6 +23,11 @@ export default {
   name: 'Daily',
   components: {
     Nav
+  },
+  data () {
+    return {
+      operations: ['⇤', '🗑', '❤️', '⇥']
+    }
   }
 }
 </script>
@@ -36,6 +50,34 @@ export default {
   .navbar {
     position: absolute;
     top: 0px;
+  }
+  .movie-info {
+    position: absolute;
+    top: 520px;
+    left: 200px;
+    border: 1px solid #8C8C8C;
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    // 设置半透明度，同时不影响文字；
+    background: rgba(140, 140, 140, 0.6);
+    span {
+      color: white;
+    }
+    .title {
+      font-size: 22px;
+    }
+    .subtitle {
+      font-size: 20px;
+    }
+    ul {
+      li {
+        margin-right: 40px;
+        float: left;
+        list-style: none;
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>
