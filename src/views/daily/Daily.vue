@@ -1,11 +1,11 @@
 <template>
   <div class="daily-main">
     <div class="bg-image">
-      <img src="static/bg.jpg"/>
+      <img src="http://img31.mtime.cn/pi/2014/03/01/163826.70242658_1000X1000.jpg"/>
     </div>
     <Nav class="navbar"/>
     <div class="movie-info">
-      <span class="title">电影信息</span><br>
+      <span class="title">当幸福来敲门</span><br>
       <span class="subtitle">电影简介</span>
       <div class="operation">
         <ul>
