@@ -1,11 +1,11 @@
 <template>
   <div class="daily-main">
     <div class="bg-image">
-      <img src="http://img31.mtime.cn/pi/2014/03/01/163826.70242658_1000X1000.jpg"/>
+      <img :src='poster_url' alt="poster"/>
     </div>
     <Nav class="navbar"/>
     <div class="movie-info">
-      <span class="title">当幸福来敲门</span><br>
+      <span class="title">{{ title }}</span><br>
       <span class="subtitle">电影简介</span>
       <div class="operation">
         <ul>
@@ -18,6 +18,10 @@
 
 <script>
 import Nav from '@/components/nav'
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+
+Vue.use(VueResource)
 
 export default {
   name: 'Daily',
@@ -26,7 +30,20 @@ export default {
   },
   data () {
     return {
-      operations: ['⇤', '🗑', '❤️', '⇥']
+      operations: ['⇤', '🗑', '❤️', '⇥'],
+      poster_url: '',
+      title: ''
+    }
+  },
+  created() {
+    this.$http.get('/api/poster/randomPoster').then((response) => {
+      this.poster_url = response.body[0].poster_url
+      this.title = response.body[0].title
+    })
+  },
+  methods: {
+    test () {
+      console.log(this)
     }
   }
 }
