@@ -2,7 +2,7 @@
   <div class="best-main">
     <h2>电影排行</h2>
     <ol>
-      <li v-for="(movie, index) in movies" :key="index">
+      <li v-for="(movie, index) in movies" :key="index" ref="list">
         <div class="item">
           <div class="pic">
             <em>{{ movie.order }}</em>
@@ -28,14 +28,17 @@
           </div>
           <div class="place">
             <div class="operations">
-              <span>喜欢😍</span>
-              <span>不爱😷</span>
+              <span @click="like(movie, index)">喜欢😍</span>
+              <span @click="dislike(movie, index)">不爱😷</span>
             </div>
           </div>
         </div>
       </li>
     </ol>
-    <Pagination :getData="getData"/>
+    <div class="recommend">
+      <button @click="recommend">电影推荐</button>
+    </div>
+    <Pagination :getData="getData" :pageCount="pageCount"/>
   </div>
 </template>
 
@@ -55,10 +58,12 @@ export default {
   data () {
     return {
       movies: [],
-      pageCount: 0
+      pageCount: 0,
+      enjoy_type: null
     }
   },
   created () {
+    this.enjoy_type = new Set()
     this.$http.post('/api/movie/getMovie', { count: 0 }, {}).then((response) => {
       this.movies = response.body
     })
@@ -71,7 +76,22 @@ export default {
       this.$http.post('/api/movie/getMovie', { count: index * 10 }, {}).then((response) => {
         this.movies = response.body
       })
-    }
+    },
+    like (movie, index) {
+      movie.enjoy = !movie.enjoy
+      if (movie.enjoy) {
+        this.$refs.list[index].setAttribute('style', 'background-color: rgb(255, 0, 121); color: white')
+        this.enjoy_type.add(movie.movie_type)
+      } else {
+        this.$refs.list[index].setAttribute('style', 'background-color: none')
+        this.enjoy_type.delete(movie.movie_type)
+      }
+    },
+    dislike (movie, index) {
+      this.$refs.list[index].setAttribute('style', 'display: none')
+      if (movie.enjoy) this.enjoy_type.delete(movie.movie_type)
+    },
+    recommend () {}
   }
 }
 </script>
@@ -122,6 +142,24 @@ export default {
           }
         }
       }
+    }
+  }
+  .recommend {
+    position: fixed;
+    align-self: flex-end;
+    top: 200px;
+    right: 30px;
+    button {
+      width: 90px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      color: white;
+      background-color: rgb(14, 137, 237);
+      outline: none;
+      cursor: pointer;
     }
   }
 }
