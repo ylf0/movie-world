@@ -3,7 +3,7 @@
     <span class="brand">电影推荐</span>
     <input class="search" placeholder="🔍  搜索电影"/>
     <ul>
-      <li v-for="item in links" :key="item"><a :href="item.href"> {{ item.name }} </a></li>
+      <li v-for="item in links" :key="item.name"><a :href="item.href"> {{ item.name }} </a></li>
     </ul>
   </div>  
 </template>
@@ -17,7 +17,7 @@ export default {
         { name: 'fun function😆', href: '/' },
         { name: '电影排行🎥', href: '#/best-movie' },
         { name: '电影专辑🎬', href: '/' },
-        { name: '个人主页👤', href: '/'}
+        { name: '个人主页👤', href: '/' }
       ]
     }
   }

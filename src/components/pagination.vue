@@ -14,28 +14,33 @@ export default {
   name: 'Pagination',
   data () {
     return {
-      pageCount: 25,
       paginations: [],
       next: false
     }
   },
   props: {
+    pageCount: {
+      type: Number,
+      default: 0
+    },
     getData: {
       type: Function
-    }
-  },
-  created () {
-    if (this.pageCount > 10) {
-      this.paginations.length = 10
-      this.next = true
-    } else {
-      this.paginations.length = this.pageCount
     }
   },
   methods: {
     more () {
       this.next = false
       this.paginations.length = this.pageCount
+    }
+  },
+  watch: {
+    pageCount () {
+      if (this.pageCount > 10) {
+        this.paginations.length = 10
+        this.next = true
+      } else {
+        this.paginations.length = this.pageCount
+      }
     }
   }
 }
@@ -47,7 +52,7 @@ export default {
   // width: 70%;
   // justify-content: flex-end;
   .pag-button {
-    padding: 10px 6px;
+    padding: 10px 6px 40px 6px;
     button {
       cursor: pointer;
     }
@@ -59,6 +64,7 @@ export default {
     border-radius: 3px;
     color: white;
     background-color: rgb(14, 137, 237);
+    outline: none;
   }
 }
 </style>
