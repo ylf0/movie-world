@@ -1,9 +1,9 @@
 <template>
   <div class="nav-main">
-    <span class="brand">电影世界</span>
+    <span class="brand">电影推荐</span>
     <input class="search" placeholder="🔍  搜索电影"/>
     <ul>
-      <li v-for="item in links" :key="item">{{ item }}</li>
+      <li v-for="item in links" :key="item"><a :href="item.href"> {{ item.name }} </a></li>
     </ul>
   </div>  
 </template>
@@ -13,7 +13,12 @@ export default {
   name: 'Nav',
   data () {
     return {
-      links: ['fun function😆', '电影排行🎥', '电影专辑🎬', '个人主页👤']
+      links: [
+        { name: 'fun function😆', href: '/' },
+        { name: '电影排行🎥', href: '#/best-movie' },
+        { name: '电影专辑🎬', href: '/' },
+        { name: '个人主页👤', href: '/'}
+      ]
     }
   }
 }
@@ -48,6 +53,10 @@ export default {
       margin-right: 60px;
       list-style: none;
       cursor: pointer;
+      a {
+        text-decoration: none;
+        color: white;
+      }
     }
   }
 }

@@ -9,7 +9,7 @@
       <span class="subtitle">电影简介</span>
       <div class="operation">
         <ul>
-          <li v-for="item in operations" :key="item">{{ item }}</li>
+          <li v-for="item in operations" :key="item" @click="test">{{ item }}</li>
         </ul>
       </div>
     </div>
@@ -42,6 +42,12 @@ export default {
     })
   },
   methods: {
+    test () {
+      this.$http.get('/api/poster/randomPoster').then((response) => {
+        this.poster_url = response.body[0].poster_url
+        this.title = response.body[0].title
+      })
+    }
   }
 }
 </script>
