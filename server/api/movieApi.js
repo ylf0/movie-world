@@ -44,4 +44,22 @@ router.get('/totalCount', (req, res) => {
   })
 })
 
+router.post('/recommend', (req, res) => {
+  var sql = $sql.movie.recommend
+  var params = req.body
+  conn.query(sql, [params.type], function (err, result) {
+    if (err) console.log(err)
+    if (result) jsonWrite(res, result)
+  })
+})
+
+router.post('/byOrder', (req, res) => {
+  var sql = $sql.movie.getByOrder
+  var params = req.body
+  conn.query(sql, [params.order], function (err, result) {
+    if (err) console.log(err)
+    if (result) jsonWrite(res, result)
+  })
+})
+
 module.exports = router

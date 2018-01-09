@@ -36,9 +36,9 @@
       </li>
     </ol>
     <div class="recommend">
-      <button @click="recommend">电影推荐</button>
+      <button @click="recommend">推荐电影</button>
     </div>
-    <Pagination :getData="getData" :pageCount="pageCount"/>
+    <Pagination v-if="showPag" :getData="getData" :pageCount="pageCount"/>
   </div>
 </template>
 
@@ -57,18 +57,28 @@ export default {
   },
   data () {
     return {
+      showPag: false,
       movies: [],
-      pageCount: 0,
-      enjoy_type: null
+      allTypeArr: [],
+      allMovieOrder: [],
+      fitOptions: [],
+      enjoy_type: null,
+      enjoy_order: null,
+      verifySet: null,
+      typeArr: [],
+      pageCount: 0
     }
   },
   created () {
     this.enjoy_type = new Set()
+    this.enjoy_order = new Set()
+    this.verifySet = new Set()
     this.$http.post('/api/movie/getMovie', { count: 0 }, {}).then((response) => {
       this.movies = response.body
     })
     this.$http.get('/api/movie/totalCount').then((response) => {
       this.pageCount = Math.round((response.body) / 10)
+      if (this.pageCount) this.showPag = true
     })
   },
   methods: {
@@ -82,16 +92,50 @@ export default {
       if (movie.enjoy) {
         this.$refs.list[index].setAttribute('style', 'background-color: rgb(255, 0, 121); color: white')
         this.enjoy_type.add(movie.movie_type)
+        this.enjoy_order.add(movie.order)
       } else {
         this.$refs.list[index].setAttribute('style', 'background-color: none')
         this.enjoy_type.delete(movie.movie_type)
+        this.enjoy_order.delete(movie.order)
       }
     },
     dislike (movie, index) {
       this.$refs.list[index].setAttribute('style', 'display: none')
-      if (movie.enjoy) this.enjoy_type.delete(movie.movie_type)
+      if (movie.enjoy) {
+        this.enjoy_type.delete(movie.movie_type)
+        this.enjoy_order.delete(movie.order)
+      }
     },
-    recommend () {}
+    recommend () {
+      [...this.enjoy_type].forEach((item) => {
+        const index = item.lastIndexOf('/')
+        item.slice(index + 2).split(' ').forEach((type) => {
+          this.allTypeArr.push(type)
+        })
+      })
+      this.typeArr = [...new Set(this.allTypeArr)]
+      this.movies = []
+      this.showPag = false
+      this.typeArr.forEach((item, index) => {
+        this.$http.post('/api/movie/recommend', { type: item }, {}).then((response) => {
+          response.body.forEach((item) => {
+            this.allMovieOrder.push(item.order)
+          })
+          if (index === this.typeArr.length - 1) {
+            this.allMovieOrder.forEach((order) => {
+              if (this.verifySet.has(order) && !this.enjoy_order.has(order)) {
+                this.$http.post('/api/movie/byOrder', { order: order }, {}).then((response) => {
+                  this.movies.push(response.body[0])
+                })
+              } else {
+                this.verifySet.add(order)
+              }
+            })
+          }
+        })
+      })
+      this.allTypeArr = []
+    }
   }
 }
 </script>
