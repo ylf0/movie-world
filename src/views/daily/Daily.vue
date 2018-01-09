@@ -35,16 +35,13 @@ export default {
       title: ''
     }
   },
-  created() {
+  created () {
     this.$http.get('/api/poster/randomPoster').then((response) => {
       this.poster_url = response.body[0].poster_url
       this.title = response.body[0].title
     })
   },
   methods: {
-    test () {
-      console.log(this)
-    }
   }
 }
 </script>
