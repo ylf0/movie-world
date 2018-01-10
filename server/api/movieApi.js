@@ -62,4 +62,13 @@ router.post('/byOrder', (req, res) => {
   })
 })
 
+router.post('/search', (req, res) => {
+  var sql = $sql.movie.search
+  var params = req.body
+  conn.query(sql, [params.searchWord], function (err, result) {
+    if (err) console.log(err)
+    if (result) jsonWrite(res, result)
+  })
+})
+
 module.exports = router

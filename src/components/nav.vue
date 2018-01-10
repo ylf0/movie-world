@@ -1,8 +1,13 @@
 <template>
   <div class="nav-main">
     <span class="brand">电影推荐</span>
-    <input class="search" placeholder="🔍  搜索电影"/>
-    <ul>
+    <div class="search">
+      <input class="search" placeholder="🔍  搜索电影" v-model="searchWord" @change="search(searchWord)"/>
+      <ul v-if="matchMovies.length">
+        <li v-for="name in matchMovies" :key="name">{{ name }}</li>
+      </ul>
+    </div>
+    <ul class="functions">
       <li v-for="item in links" :key="item.name"><a :href="item.href"> {{ item.name }} </a></li>
     </ul>
   </div>  
@@ -11,8 +16,16 @@
 <script>
 export default {
   name: 'Nav',
+  props: {
+    search: { type: Function },
+    matchMovies: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
+      searchWord: '',
       links: [
         { name: 'fun function😆', href: '/' },
         { name: '电影排行🎥', href: '#/best-movie' },
@@ -46,7 +59,7 @@ export default {
     border-radius: 8px;
     border: 1px solid gray;
   }
-  ul {
+  .functions {
     margin: 0 40px 0 0;
     li {
       float: left;
@@ -56,6 +69,28 @@ export default {
       a {
         text-decoration: none;
         color: white;
+      }
+    }
+  }
+  .search {
+    display: flex;
+    flex-direction: column;
+    ul {
+      position: relative;
+      top: -6px;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: white;
+      li {
+        padding: 4px;
+        padding-right: 0;
+        color: gray;
+        cursor: pointer;
+        list-style: none;
+        &:hover {
+          color: rgb(71, 171, 245);
+          background-color: rgb(245, 245, 245);
+        }
       }
     }
   }

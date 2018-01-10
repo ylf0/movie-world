@@ -3,13 +3,13 @@
     <div class="bg-image">
       <img :src='poster_url' alt="poster"/>
     </div>
-    <Nav class="navbar"/>
+    <Nav class="navbar" :search="search" :matchMovies="matchMovies"/>
     <div class="movie-info">
       <span class="title">{{ title }}</span><br>
       <span class="subtitle">电影简介</span>
       <div class="operation">
         <ul>
-          <li v-for="item in operations" :key="item" @click="test">{{ item }}</li>
+          <li v-for="item in operations" :key="item" @click="changeIndex">{{ item }}</li>
         </ul>
       </div>
     </div>
@@ -32,7 +32,8 @@ export default {
     return {
       operations: ['⇤', '🗑', '❤️', '⇥'],
       poster_url: '',
-      title: ''
+      title: '',
+      matchMovies: []
     }
   },
   created () {
@@ -42,10 +43,21 @@ export default {
     })
   },
   methods: {
-    test () {
+    changeIndex () {
       this.$http.get('/api/poster/randomPoster').then((response) => {
         this.poster_url = response.body[0].poster_url
         this.title = response.body[0].title
+      })
+    },
+    search (val) {
+      if (!val) {
+        this.matchMovies = []
+        return
+      }
+      this.$http.post('/api/movie/search', { searchWord: val }, {}).then((response) => {
+        response.body.forEach((movie) => {
+          this.matchMovies.push(movie.title)
+        })
       })
     }
   }

@@ -1,6 +1,7 @@
 <template>
   <div class="best-main">
-    <h2>电影排行</h2>
+    <h2 v-if="!hideButton">电影排行</h2>
+    <h2 v-else>电影推荐</h2>
     <ol>
       <li v-for="(movie, index) in movies" :key="index" ref="list">
         <div class="item">
@@ -35,10 +36,10 @@
         </div>
       </li>
     </ol>
-    <div class="recommend">
+    <div class="recommend" v-show="!hideButton">
       <button @click="recommend">推荐电影</button>
     </div>
-    <Pagination v-if="pageCount" :getData="getData" :pageCount="pageCount"/>
+    <Pagination v-if="pageCount" :getData="getData" :currentPage="currentPage" :pageCount="pageCount"/>
   </div>
 </template>
 
@@ -57,6 +58,7 @@ export default {
   },
   data () {
     return {
+      hideButton: false,
       movies: [],
       allTypeArr: [],
       allMovieOrder: [],
@@ -65,7 +67,8 @@ export default {
       enjoy_order: null,
       verifySet: null,
       typeArr: [],
-      pageCount: 0
+      pageCount: 0,
+      currentPage: 0
     }
   },
   created () {
@@ -81,6 +84,7 @@ export default {
   },
   methods: {
     getData (index) {
+      this.currentPage = index
       this.$http.post('/api/movie/getMovie', { count: index * 10 }, {}).then((response) => {
         this.movies = response.body
       })
@@ -108,15 +112,17 @@ export default {
       }
     },
     recommend () {
-      [...this.enjoy_type].forEach((item) => {
+      this.movies = []
+      this.pageCount = 0
+      this.hideButton = true
+      const enjoyArr = [...this.enjoy_type]
+      enjoyArr.forEach((item) => {
         const index = item.lastIndexOf('/')
         item.slice(index + 2).split(' ').forEach((type) => {
           this.allTypeArr.push(type)
         })
       })
       this.typeArr = [...new Set(this.allTypeArr)]
-      this.movies = []
-      this.pageCount = 0
       this.typeArr.forEach((item, index) => {
         this.$http.post('/api/movie/recommend', { type: item }, {}).then((response) => {
           response.body.forEach((item) => {

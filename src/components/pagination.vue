@@ -1,7 +1,7 @@
 <template>
   <div class="pagination-main">
     <div class="pag-button" v-for="(item, index) in paginations" :key="item">
-      <button @click="getData(index)">{{ index + 1 }}</button>
+      <button @click="getData(index)" ref="pagination">{{ index + 1 }}</button>
     </div>
     <div class="pag-button">
       <button v-if="next" @click="more">more</button>
@@ -15,11 +15,16 @@ export default {
   data () {
     return {
       paginations: [],
-      next: false
+      next: false,
+      test: ''
     }
   },
   props: {
     pageCount: {
+      type: Number,
+      default: 0
+    },
+    currentPage: {
       type: Number,
       default: 0
     },
@@ -49,6 +54,12 @@ export default {
       } else {
         this.paginations.length = this.pageCount
       }
+    },
+    currentPage (val) {
+      this.$refs.pagination.forEach((item) => {
+        item.setAttribute('style', 'background-color: none;')
+      })
+      this.$refs.pagination[val].setAttribute('style', 'background-color: rgb(14, 137, 237);')
     }
   }
 }
@@ -71,7 +82,7 @@ export default {
     border: none;
     border-radius: 3px;
     color: white;
-    background-color: rgb(14, 137, 237);
+    background-color: rgb(188, 194, 201);
     outline: none;
   }
 }
