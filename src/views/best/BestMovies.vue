@@ -38,7 +38,7 @@
     <div class="recommend">
       <button @click="recommend">推荐电影</button>
     </div>
-    <Pagination v-if="showPag" :getData="getData" :pageCount="pageCount"/>
+    <Pagination v-if="pageCount" :getData="getData" :pageCount="pageCount"/>
   </div>
 </template>
 
@@ -57,7 +57,6 @@ export default {
   },
   data () {
     return {
-      showPag: false,
       movies: [],
       allTypeArr: [],
       allMovieOrder: [],
@@ -78,13 +77,15 @@ export default {
     })
     this.$http.get('/api/movie/totalCount').then((response) => {
       this.pageCount = Math.round((response.body) / 10)
-      if (this.pageCount) this.showPag = true
     })
   },
   methods: {
     getData (index) {
       this.$http.post('/api/movie/getMovie', { count: index * 10 }, {}).then((response) => {
         this.movies = response.body
+      })
+      this.$refs.list.forEach((item) => {
+        item.setAttribute('style', 'background-color: none')
       })
     },
     like (movie, index) {
@@ -115,7 +116,7 @@ export default {
       })
       this.typeArr = [...new Set(this.allTypeArr)]
       this.movies = []
-      this.showPag = false
+      this.pageCount = 0
       this.typeArr.forEach((item, index) => {
         this.$http.post('/api/movie/recommend', { type: item }, {}).then((response) => {
           response.body.forEach((item) => {
@@ -127,6 +128,7 @@ export default {
                 this.$http.post('/api/movie/byOrder', { order: order }, {}).then((response) => {
                   this.movies.push(response.body[0])
                 })
+                this.verifySet.delete(order)
               } else {
                 this.verifySet.add(order)
               }

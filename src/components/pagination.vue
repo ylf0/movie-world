@@ -27,6 +27,14 @@ export default {
       type: Function
     }
   },
+  created () {
+    if (this.pageCount > 10) {
+      this.paginations.length = 10
+      this.next = true
+    } else {
+      this.paginations.length = this.pageCount
+    }
+  },
   methods: {
     more () {
       this.next = false
